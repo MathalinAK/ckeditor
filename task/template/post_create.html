@@ -1,0 +1,137 @@
+{% load crispy_forms_tags %}
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>create Page</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/post.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+</head>
+<div class="container-fluid p-0">
+    <nav class="navbar navbar-expand-lg" id="nav">
+        <div class="navbar-content">
+            <p>Text Editor</p>
+        </div>
+    </nav>
+</div>
+<div class="containerh">
+
+        <!-- <div class="form-group">
+            <label for="id_title" style="margin:2px;">Categories</label>
+            <select name="title" id="id_title" class="form-select" onchange="chargeother(this)">
+                <option selected disabled>select categories</option>
+                {% for post in posts %}
+                    <option value="{{ post.title }}" {% if post.title == form.instance.title %}selected{% endif %}>
+                        {{ post.title }}
+                    </option>
+                   
+                {% endfor %}
+                <option value="other">Other</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="id_category"style="margin:2px;">Title</label>
+            <input type="text" name="category" id="id_category" class="form-control" value="{{ form.instance.category }}">
+        </div>
+        <div class="form-group">
+            {{ form.media }}
+            {{ form.content }}
+        </div>
+        <button type="submit" class="btn btn-primary">
+            {% if form.instance.id %} Save Changes {% else %} Post {% endif %}
+        </button>
+        <a href="{% url 'homes' %}" class="btn btn-secondary">Back</a>
+    </form>
+</div>
+<script>
+    var chargeother = function(el) { 
+  if ('other' !== el.value) return;
+  el.parentNode.innerHTML = "<label for='id_title'style='margin:2px;'>Categories</label><input type='text' style='width:100%;padding: 10px;' name='" + el.name + "'/>";
+};
+</script>
+
+ -->
+ <!-- <form action="{% url 'post_create' %}" method="post"> 
+    {% csrf_token %} -->
+    <!-- <div class="form-group">
+        <label for="id_category" style="margin:2px;">Category</label>
+        <select name="category" id="id_category" class="form-select" onchange="addOtherCategory(this)">
+            <option selected disabled>Select a category</option>
+            {% for category in categories %}
+                <option value="{{ category.id }}">{{ category.name }}</option>
+            {% endfor %}
+            <option value="other">Other</option>
+        </select>
+    
+    </div> -->
+    <form action="{% url 'post_create' %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id_category">Category</label>
+            <select name="category" id="id_category" 
+                    class="form-select {% if form.errors.category %}is-invalid{% endif %}" 
+                    onchange="addOtherCategory(this)">
+                <option selected disabled>Select a category</option>
+                {% for category in categories %}
+                    <option value="{{ category.id }}" {% if category.id == form.instance.category_id %}selected{% endif %}>
+                        {{ category.name }}
+                    </option>
+                {% endfor %}
+                <option value="other">New Category</option>
+            </select>
+            {% if form.errors.category %}
+            <div class="text-danger">{{ form.errors.category }}</div>
+            {% endif %}
+        </div>
+    
+        <div id="other-category" class="form-group" style="display:none;">
+            <label for="id_new_category" style="margin:2px;">New Category</label>
+            <input type="text" name="new_category" id="id_new_category" 
+                   class="form-control {% if form.errors.new_category %}is-invalid{% endif %}" 
+                   placeholder="Enter new category">
+            {% if form.errors.new_category %}
+            <div class="text-danger">{{ form.errors.new_category }}</div>
+            {% endif %}
+        </div>
+    
+        <div class="form-group">
+            <label for="id_title" style="margin:2px;">Title</label>
+            <input type="text" name="title" id="id_title" 
+                   class="form-control {% if form.errors.title %}is-invalid{% endif %}" 
+                   value="{{ form.instance.title }}" placeholder="Enter post title">
+            {% if form.errors.title %}
+            <div class="text-danger">{{ form.errors.title }}</div>
+            {% endif %}
+        </div>
+    
+        <div class="form-group">
+            {{ form.media }}
+            <label for="id_content">Post Content</label>
+            {{ form.content }}
+            {% if form.errors.content %}
+            <div class="text-danger">{{ form.errors.content }}</div>
+            {% endif %}
+        </div>
+        <a href="{% url 'homes' %}" class="btn btn-primary" id="type">Back</a>
+        <button type="submit" class="btn btn-primary" >
+            {% if form.instance.id %} Save Changes {% else %} Post {% endif %}
+        </button>
+    </form>   
+    
+    <script>
+        function addOtherCategory(el) {
+            const otherCategoryField = document.getElementById('other-category');
+            if (el.value === 'other') {
+                otherCategoryField.style.display = 'block';
+            } else {
+                otherCategoryField.style.display = 'none';
+            }
+        }
+    </script>
+    

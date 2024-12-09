@@ -1,0 +1,208 @@
+{% load crispy_forms_tags %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/home1.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+</head>
+
+<body>
+       
+    <div class="container-fluid p-0">
+        <nav class="navbar navbar-expand-lg navbar-light bg-primary" id="nav">
+            <div class="container"style="height: 42px;">
+                <div class="navbar-content">
+                    <p>Text Editor</p>
+                    
+                   
+                </div>
+                <div class="navbar-right">
+                    <span style="font-size: 20px;">Welcome </span>
+                    
+                   
+                </div>
+            </div>
+        </nav>
+    </div>
+    
+    <div class="container mt-3">
+        <div class="mb-3">
+                    <div class="search-container position-relative" style="display:flex;justify-content: space-between;">
+                        <input type="text" id="searchBox" class="form-control search-box" 
+                               placeholder="search posts" autocomplete="off">
+                        <i class="bi bi-search position-absolute" style="top: 50%; left:-55px; transform: translateY(-50%); color: gray;"></i>
+                        <div id="search-results" class="list-group mt-5"></div>
+                    <!-- </div>
+             </div> -->
+        {% if selected_category or selected_category.posts.exists %}
+            <div class="d-flex justify-content-end">
+                <a href="{% url 'post_create' %}" class="btn btn-primary">Create Post</a>
+            </div>
+        {% endif %}
+    </div>
+    </div>
+    </div>
+    <div class="container mt-4" id="posts-container">
+        <div class="row">
+            <div class="col-md-3">
+                <h4>Categories</h4>
+                <ul class="list-group" id="category-list">
+                    {% for category in categories %}
+                        <li class="list-item-wrapper d-flex justify-content-between align-items-center">
+                            <a href="?category_id={{ category.id }}" 
+                               class="list-group-item flex-grow-1 {% if selected_category and category.id == selected_category.id %}active{% endif %}">
+                               {{ category.name }}
+                            </a>
+                            
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+     
+            
+
+            <div class="col-md-10" style="width:75%;margin-top: 20px;">
+                <div class="card mt-4">
+                    <div class="card-body" id="posts-container">
+                        {% if selected_category and not selected_post %}
+                            <h5>{{ selected_category.name }}</h5>
+                            <div class="sort-dropdown">
+                                <select class="selectsort" name="sort_by" id="sortDropdown">
+                                    <option value="A-Z" {% if selected_sort == 'A-Z' %}selected{% endif %}>Sort by A-Z</option>
+                                    <option value="Z-A" {% if selected_sort == 'Z-A' %}selected{% endif %}>Sort by Z-A</option>
+                                    <option value="old" {% if selected_sort == 'old' %}selected{% endif %}>Sort by oldest-newest</option>
+                                    <option value="new" {% if selected_sort == 'new' %}selected{% endif %}>Sort by newest-oldest</option>
+                                </select>
+                            
+    
+                                
+                            </div>
+                            {% if posts %}
+                                <ul class="list-group" id="posts-list">
+                                    {% for post in posts %}
+                                        <li class="list-group-item d-flex justify-content-between align-items-center" style="border:none">
+                                            <a href="?category_id={{ selected_category.id }}&post_id={{ post.id }}" class="text-decoration-none">
+                                                {{ post.title }}
+                                                
+
+                                            </a>
+
+   
+
+                                            
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <p>No posts available for this category.</p>
+                                
+                            {% endif %}
+                        {% elif selected_post %}
+                            <h5>{{ selected_post.title }}</h5>
+                            <p>{{ selected_post.content|safe }}</p>
+                        {% else %}
+                            <p>No category selected. Please choose a category.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            
+<script>
+$(document).ready(function () {
+        $('#sortDropdown').on('change', function () {
+            var selectedSort = $(this).val();
+            var categoryId = '{{ selected_category.id }}';
+            var url = new URL(window.location.href);
+
+            if (categoryId) {
+                url.searchParams.set('category_id', categoryId);
+            }
+            if (selectedSort) {
+                url.searchParams.set('sort_by', selectedSort);
+            } else {
+                url.searchParams.delete('sort_by');
+            }
+
+            console.log(url.toString()); 
+            window.location.href = url.toString();
+        });
+    });
+ 
+    document.addEventListener('DOMContentLoaded', () => {
+    const searchBox = document.getElementById('searchBox');
+    const searchResults = document.getElementById('search-results');
+
+    searchBox.addEventListener('input', function () {
+        const query = searchBox.value.trim();
+        
+        if (query.length >= 3) {
+            // Fetch search results
+            fetch(`/search/?query=${encodeURIComponent(query)}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Clear previous results
+                    searchResults.innerHTML = '';
+                    
+                    if (data.results && data.results.length > 0) {
+                        // Show search results
+                        searchResults.style.display = 'block';
+                        data.results.forEach(result => {
+                            const resultItem = document.createElement('a');
+                            resultItem.href = `/post/${result.id}`; // Adjust URL as needed
+                            resultItem.className = 'list-group-item list-group-item-action';
+                            resultItem.textContent = `${result.title} (${result.category})`;
+                            searchResults.appendChild(resultItem);
+                        });
+                    } else {
+                        
+                        searchResults.style.display = 'block';
+                        searchResults.innerHTML = '<p class="list-group-item">No results found</p>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching search results:', error);
+                    searchResults.style.display = 'block';
+                    searchResults.innerHTML = '<p class="list-group-item text-danger">Error fetching results</p>';
+                });
+        } else {
+            searchResults.style.display = 'none';
+        }
+    });
+    document.addEventListener('click', (e) => {
+        if (!searchBox.contains(e.target) && !searchResults.contains(e.target)) {
+            searchResults.style.display = 'none';
+        }
+    });
+});
+
+   
+    
+    </script>
+</body>
+</html>
+
+
+
+
+    

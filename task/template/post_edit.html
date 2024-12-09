@@ -1,0 +1,146 @@
+{% load crispy_forms_tags %}
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>edit Page</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/post.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+ 
+            <!-- <div class="container">
+                <nav class="navbar navbar-expand-lg navbar-light bg-light" id="nav">
+                    <div class="navbar-content">
+                        <p>Text Editor</p>
+                    </div>
+                </nav>
+            </div>
+            <div class="containerh">     
+            <form action="{% url 'post_edit' post.id %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="id_category">Category</label>
+                    
+                    <select name="category" id="id_category_other" class="form-select" onchange="addOtherCategory(this)">
+                        <option selected disabled>Select a category</option>
+                        {% for category in categories %}
+                            <option value="{{ category.id }}" {% if category.id == post.category_id %}selected{% endif %}>
+                                {{ category.name }}
+                            </option>
+                        {% endfor %}
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+        
+            <div id="other-category" class="form-group" style="display:none;">
+                <label for="id_new_category">New Category</label>
+                <input type="text" name="new_category" id="id_new_category" class="form-control" placeholder="Enter new category">
+            </div>
+        
+            <div class="form-group">
+                <label for="id_title" style="margin:2px;">Title</label>
+                <input type="text" name="title" id="id_title" class="form-control" value="{{ form.instance.title }}" placeholder="Enter post title">
+            </div>
+        
+            <div class="form-group">
+                {{ form.media }}
+                <label for="id_content">Content</label>
+                {{ form.content }}
+            </div>
+        
+            <button type="submit" a href="{% url 'homes' %}" class="btn btn-primary">Save</button>
+            <a href="{% url 'homes' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+  </body>      
+        <script>
+            function addOtherCategory(el) {
+                const otherCategoryField = document.getElementById('other-category');
+                if (el.value === 'other') {
+                    otherCategoryField.style.display = 'block';
+                } else {
+                    otherCategoryField.style.display = 'none';
+                }
+            }
+        </script>
+        
+         -->
+         <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light" id="nav">
+                <div class="navbar-content">
+                    <p>Text Editor</p>
+                </div>
+            </nav>
+        </div>
+       
+        
+        <div class="containerh">     
+            <form action="{% url 'post_edit' post.id %}" method="post">
+                {% csrf_token %}
+              
+                    <div class="form-group text-center">
+                        <label for="id_title" id="title-label" onclick="editTitle()">
+                            <span id="title-display">{{ form.instance.title }}</span>
+                            <input type="text" name="title" id="id_title" class="form-control" value="{{ form.instance.title }}" style="display:none;">
+                        </label>
+                    </div>
+                    <div class="form-group">
+                    <label for="id_category">Category</label>
+                    <select name="category" id="id_category_other" class="form-select" onchange="addOtherCategory(this)">
+                        <option selected disabled>Select a category</option>
+                        {% for category in categories %}
+                            <option value="{{ category.id }}" {% if category.id == post.category_id %}selected{% endif %}>
+                                {{ category.name }}
+                            </option>
+                        {% endfor %}
+                        <option value="">New Category</option>
+                    </select>
+                </div>
+        
+                <div id="other-category" class="form-group" style="display:none;">
+                    <label for="id_new_category">New Category</label>
+                    <input type="text" name="new_category" id="id_new_category" class="form-control" placeholder="Enter new category">
+                </div>
+        
+                
+                
+        
+                <div class="form-group">
+                    {{ form.media }}
+                    <label for="id_content">Content</label>
+                    {{ form.content }}
+                </div>
+                
+                <a href="{% url 'homes' %}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </form>
+        </div>
+        
+        <script>
+            function addOtherCategory(el) {
+                const otherCategoryField = document.getElementById('other-category');
+                if (el.value === 'other') {
+                    otherCategoryField.style.display = 'block';
+                } else {
+                    otherCategoryField.style.display = 'none';
+                }
+            }
+        
+            function editTitle() {
+                const titleLabel = document.getElementById('title-label');
+                const titleDisplay = document.getElementById('title-display');
+                const titleInput = document.getElementById('id_title');
+        
+                
+                titleDisplay.style.display = 'none';
+                titleInput.style.display = 'block';
+                titleInput.focus();
+            }
+        </script>
+        
